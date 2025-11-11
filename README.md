@@ -1,80 +1,160 @@
-Data Structure Benchmark: List<T> vs Dictionary<T>
+1. Fast Lookups → Use Dictionary<TKey, TValue>
+✅ Scenario
 
-This project demonstrates the performance differences between List<T> and Dictionary<T> when working with large hierarchical datasets.
-The benchmark focuses specifically on lookup/search performance in both structures.
+You need to quickly find a customer's record by customer ID.
 
-✅ Overview
+✅ Why Dictionary?
 
-The console application creates:
+O(1) average lookup time
 
-10,0000 parent items
+No scanning the entire list
 
-Each parent contains 50 child items
+✅ Example
+var customers = new Dictionary<int, Customer>();
+var customer = customers[customerId];
 
-Data is stored using:
+✅ 2. Maintaining Sorted Data → Use SortedList or SortedDictionary
+✅ Scenario
 
-A List<ParentItem>
+You need items automatically sorted by keys—for example, showing leaderboard scores or sorted configuration keys.
 
-A Dictionary<int, ParentItem>
+✅ Why?
 
-The benchmark then compares how quickly each structure can locate:
+Automatically stays sorted
 
-A specific parent by ID
+No need to call .Sort() manually
 
-A specific child within that parent
+✅ Example
+var scores = new SortedDictionary<int, string>(); // score → player
 
-✅ Why This Benchmark?
+✅ 3. Avoiding Duplicates → Use HashSet<T>
+✅ Scenario
 
-This example shows the practical difference between:
+You need to track unique email addresses or unique product SKUs.
 
-List<T>
+✅ Why HashSet?
 
-O(n) lookup for parent items
+Prevents duplicates automatically
 
-O(n) lookup for child items
+Lookups are O(1)
 
-Good for sequential operations
+Much faster than checking a List for duplicates
 
-Slow for repeated searches
+var uniqueEmails = new HashSet<string>();
+uniqueEmails.Add("test@example.com");
 
-Dictionary<TKey, TValue>
+✅ 4. Queueing / FIFO Processing → Use Queue<T>
+✅ Scenario
 
-O(1) lookup for parent items
+Implementing a support ticket system or job-processing pipeline.
 
-Only child lookup remains O(n)
+✅ Why?
 
-Ideal for fast, repeated access
+First-in-first-out
 
-The benchmark allows you to see the measurable difference when the data is large.
+O(1) enqueue/dequeue
 
-✅ Benchmark Process
+var queue = new Queue<Job>();
+queue.Enqueue(new Job());
+var nextJob = queue.Dequeue();
 
-Generate 10,000 parent objects.
+✅ 5. Undo/Backtracking → Use Stack<T>
+✅ Scenario
 
-Each parent contains 50 child objects.
+Implement undo functionality (like in VS Code or Photoshop) or depth-first search.
 
-Populate both:
+✅ Why Stack?
 
-a List<ParentItem>
+Last-in-first-out (LIFO)
 
-a Dictionary<int, ParentItem>
+Natural for recursive undo steps
 
-Search for:
+var history = new Stack<State>();
+history.Push(currentState);
 
-Parent ID = 9876
+✅ 6. Graphs → Use Dictionary<T, List<T>>
+✅ Scenario
 
-Child ID = 40
+Representing social networks, maps (roads), or dependency graphs.
 
-Measure elapsed time using Stopwatch.
+✅ Why?
 
-✅ Expected Results
+Flexible
 
-Typically:
+Easy to add neighbors
 
-Dictionary<T> will be dramatically faster for parent lookups.
+var graph = new Dictionary<string, List<string>>();
+graph["A"] = new List<string> { "B", "C" };
 
-List<T> will require scanning through all parents, taking noticeably longer.
+✅ 7. Priority-based Processing → Use PriorityQueue<TElement, TPriority>
+✅ Scenario
 
-Child search time will be similar because both use a List for children.
+Task schedulers, pathfinding (Dijkstra, A*), CPU job execution.
 
-This benchmark helps visualize why Dictionary<T> is the preferred structurewhen fast lookups are required.
+✅ Why PriorityQueue?
+
+Always dequeues the highest-priority item
+
+Efficient for algorithms requiring priority ordering
+
+var pq = new PriorityQueue<Job, int>();
+pq.Enqueue(job, priority);
+
+✅ 8. Constant-Time Index Access → Use Arrays
+✅ Scenario
+
+High-performance workloads: game engines, simulations, image processing.
+
+✅ Why Array?
+
+Fastest possible index access
+
+Lower memory overhead
+
+Great cache locality
+
+int[] values = new int[100];
+var x = values[50];
+
+✅ 9. Fast Searching in Large Data → Use List<T> + BinarySearch
+
+If the list is sorted, you can use binary search.
+
+✅ When beneficial
+
+Frequent reads, few writes
+
+Data doesn't change often
+
+list.Sort();
+int index = list.BinarySearch(value);
+
+✅ 10. Fast Insertions in Middle → Use LinkedList<T>
+✅ Scenario
+
+Implementing LRU caches or playlists where you frequently add/remove in the middle.
+
+✅ Why LinkedList?
+
+O(1) insert/remove if you already have the node
+
+var list = new LinkedList<int>();
+var node = list.AddFirst(1);
+list.AddAfter(node, 2);
+
+✅ 11. Multi-Value Dictionary → Use Dictionary<T, List<T>>
+✅ Scenario
+
+A product catalog where one category has many products.
+
+var map = new Dictionary<string, List<Product>>();
+map["Electronics"].Add(phone);
+
+✅ 12. Thread-Safe Access → Use ConcurrentDictionary<,> or ConcurrentQueue<T>
+✅ Scenario
+
+High-throughput web servers, background worker queues, caching layers.
+
+✅ Example
+var cache = new ConcurrentDictionary<int, string>();
+cache.TryAdd(1, "value");
